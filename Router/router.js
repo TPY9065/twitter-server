@@ -31,14 +31,14 @@ router.use("/home", reqIsValidate, (req, res, next) => {
 });
 
 // tweet validation middleware
-router.use("/post/tweet", tweetIsValidate, (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const err = new Error(errors.array()[0].msg);
-    next(err);
-  }
-  next();
-});
+// router.use("/post/tweet", tweetIsValidate, (req, res, next) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     const err = new Error(errors.array()[0].msg);
+//     next(err);
+//   }
+//   next();
+// });
 
 // login
 router.post("/home/login", (req, res) => {
@@ -142,7 +142,7 @@ router.delete("/home/delete", async (req, res) => {
 });
 
 // tweets posting
-router.post("/post/tweet", upload.array("image", 5), async (req, res) => {
+router.post("/post/tweet", upload.array("image", 4), async (req, res) => {
   const tweet = await uploadImage(req);
   tweetModel.create(tweet, (err, tweet) => {
     try {
@@ -154,6 +154,14 @@ router.post("/post/tweet", upload.array("image", 5), async (req, res) => {
   });
 });
 
+// tweets info updating
+router.put("/update/tweet", async (req, res) => {
+  const id = req.body.id;
+  const data = req.body.data;
+  tweetModel.findByIdAndUpdate(id, { $inc: { [data]: 1 } }).exec();
+});
+
+// tweets deleting
 router.delete("/delete/tweet", async (req, res) => {
   // const id = req.body.id;
   const tweets = await tweetModel.find({}, "_id").exec();

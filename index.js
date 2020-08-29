@@ -12,7 +12,7 @@ dotenv.config();
 
 // essential variables
 const port = process.env.PORT || 3000;
-const mongodbUrl = process.env.MONGODB_URL;
+const mongodbUrl = process.env.MONGODB_URL || "mongodb://localhost/tweet-clone";
 
 // database set up
 mongoose.connect(mongodbUrl, {
@@ -31,6 +31,6 @@ app.use(morgan("tiny"));
 app.use(express.json());
 app.use(router);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Listening to http://localhost:${port}...`);
 });

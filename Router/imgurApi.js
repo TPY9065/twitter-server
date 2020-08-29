@@ -3,25 +3,33 @@ const axios = require("axios");
 const { tweetModel } = require("./schema");
 
 const uploadImage = async (req) => {
-  const promises = req.files.map((file) => {
-    const fileBuffer = file.buffer.toString("base64");
-    const config = fileConfig(fileBuffer, file.originalname);
-    return axios(config);
-  });
-  const links = {};
-  (await Promise.all(promises)).forEach((response) => {
-    try {
-      const id = response.data.data.id;
-      const url = response.data.data.link;
-      const imageInfo = { [id]: url };
-      Object.assign(links, imageInfo);
-    } catch (err) {
-      return err.message;
-    }
-  });
+  var links = {};
+  if (req.files != undefined) {
+    const promises = [];
+    req.files.map((file) => {
+      const fileBuffer = file.buffer.toString("base64");
+      const config = fileConfig(fileBuffer, file.originalname);
+      promises.push(axios(config));
+    });
+    (await Promise.all(promises)).map((response) => {
+      try {
+        const id = response.data.data.id;
+        const url = response.data.data.link;
+        links[id] = url;
+      } catch (err) {
+        return err.message;
+      }
+    });
+  }
+  var empty = true;
+  for (var f in links) {
+    empty = false;
+  }
+  if (empty) {
+    links = null;
+  }
   const tweet = {
     text: req.body.text,
-    userIcon: "123",
     username: req.body.username,
     media: links,
     comment: 0,
