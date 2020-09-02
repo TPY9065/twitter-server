@@ -10,7 +10,7 @@ const fileConfig = (fileBuffer, name) => {
     url: "https://api.imgur.com/3/image",
     method: "post",
     headers: {
-      Authorization: `Bearer ${BEARER}`,
+      Authorization: `Bearer 6ef0c1cf122476f807ea1f2ddd1806f81e69112f`,
       ...formData.getHeaders(),
     },
     data: formData,

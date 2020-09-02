@@ -141,17 +141,17 @@ router.delete("/home/delete", async (req, res) => {
   });
 });
 
+// get all tweets
+router.get("/get/tweets", async (req, res) => {
+  const tweets = await tweetModel.find({});
+  res.status(200).json({ tweets: tweets });
+});
+
 // tweets posting
 router.post("/post/tweet", upload.array("image", 4), async (req, res) => {
   const tweet = await uploadImage(req);
-  tweetModel.create(tweet, (err, tweet) => {
-    try {
-      if (err && err.code === 11000) throw err;
-      res.status(200).json({ message: "Data is saved", tweet: tweet });
-    } catch (err) {
-      res.status(400).json({ message: err });
-    }
-  });
+  tweetModel.create(tweet);
+  res.status(200).json({ message: "Data is saved", tweet: tweet });
 });
 
 // tweets info updating
