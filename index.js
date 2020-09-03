@@ -18,6 +18,7 @@ const mongodbUrl = process.env.MONGODB_URL || "mongodb://localhost/tweet-clone";
 mongoose.connect(mongodbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: true,
 });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
