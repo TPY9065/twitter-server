@@ -142,9 +142,15 @@ router.delete("/home/delete", async (req, res) => {
 });
 
 // get all tweets
-router.get("/get/tweets", async (req, res) => {
+router.post("/get/tweets", async (req, res) => {
+  console.log(req.body);
   const tweets = await tweetModel.find({});
-  res.status(200).json({ tweets: tweets });
+  const returnTweets = tweets.slice(
+    req.body.page * 3,
+    req.body.page + parseInt(req.body.page + 1) * 3
+  );
+  console.log(returnTweets);
+  res.status(200).json({ tweets: returnTweets });
 });
 
 // tweets posting
