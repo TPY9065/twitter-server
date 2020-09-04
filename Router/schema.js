@@ -22,7 +22,7 @@ const tweetSchema = new Schema({
   comment: Number,
   retweets: Number,
   like: Number,
-  time: Date,
+  time: String,
 });
 
 const userModel = mongoose.model("userModel", userSchema);

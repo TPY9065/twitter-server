@@ -145,8 +145,8 @@ router.delete("/home/delete", async (req, res) => {
 router.post("/get/tweets", async (req, res) => {
   const tweets = (await tweetModel.find({})).reverse();
   const returnTweets = tweets.slice(
-    req.body.page * 4,
-    parseInt(req.body.page + 1) * 4
+    req.body.page * 5,
+    parseInt(req.body.page + 1) * 5
   );
   if (returnTweets.length === 0) {
     return res
