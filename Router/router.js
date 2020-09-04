@@ -143,18 +143,17 @@ router.delete("/home/delete", async (req, res) => {
 
 // get all tweets
 router.post("/get/tweets", async (req, res) => {
-  console.log(
-    `page: ${req.body.page}, doc: ${(await tweetModel.find({})).length}`
+  const tweets = (await tweetModel.find({})).reverse();
+  const returnTweets = tweets.slice(
+    req.body.page * 4,
+    parseInt(req.body.page + 1) * 4
   );
-  if ((await tweetModel.find({})).length > req.body.page * 4) {
-    const tweets = (await tweetModel.find({})).reverse();
-    const returnTweets = tweets.slice(
-      req.body.page * 4,
-      req.body.page + parseInt(req.body.page + 1) * 4
-    );
-    return res.status(200).json({ tweets: returnTweets });
+  if (returnTweets.length === 0) {
+    return res
+      .status(304)
+      .json({ message: "There are no more tweets in the database" });
   }
-  res.status(304).json({ message: "There are no more tweets in the database" });
+  return res.status(200).json({ tweets: returnTweets });
 });
 
 // tweets posting
