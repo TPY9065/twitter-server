@@ -165,9 +165,13 @@ router.post("/post/tweet", upload.array("image", 4), async (req, res) => {
 
 // tweets info updating
 router.put("/update/tweet", async (req, res) => {
-  const id = req.body.id;
-  const data = req.body.data;
-  tweetModel.findByIdAndUpdate(id, { $inc: { [data]: 1 } }).exec();
+  const { id, data, liked } = req.body;
+  console.log(req.body);
+  if (!liked) {
+    tweetModel.findByIdAndUpdate(id, { $inc: { [data]: 1 } }).exec();
+  } else {
+    tweetModel.findByIdAndUpdate(id, { $inc: { [data]: -1 } }).exec();
+  }
 });
 
 // tweets deleting
