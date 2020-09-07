@@ -1,8 +1,8 @@
 const express = require("express");
 const multer = require("multer");
 const { validationResult } = require("express-validator");
-const { userModel, tweetModel } = require("./schema");
-const { reqIsValidate, tweetIsValidate } = require("./validator");
+const { userModel, tweetModel, commentModel } = require("./schema");
+const { reqIsValidate } = require("./validator");
 const { uploadImage, deleteImage } = require("./imgurApi");
 
 const router = express.Router();
@@ -163,8 +163,8 @@ router.post("/post/tweet", upload.array("image", 4), async (req, res) => {
   res.status(200).json({ message: "Data is saved", tweet: tweet });
 });
 
-// tweets info updating
-router.put("/update/tweet", async (req, res) => {
+// update tweets like
+router.put("/like/tweet", async (req, res) => {
   const { id, data, liked } = req.body;
   console.log(req.body);
   if (!liked) {
@@ -172,6 +172,16 @@ router.put("/update/tweet", async (req, res) => {
   } else {
     tweetModel.findByIdAndUpdate(id, { $inc: { [data]: -1 } }).exec();
   }
+});
+
+// update tweets comments and save to comment database
+router.put("/comment/tweet", async (req, res) => {
+  const id = req.body.replyTweetId;
+  tweetModel.findByIdAndUpdate(id, { $inc: { comment: 1 } }).exec();
+  var commentTweet = await uploadImage(req);
+  commentTweet.replyTweetId = id;
+  commentModel.create(commentTweet);
+  res.status(200).json({ comment: commentTweet });
 });
 
 // tweets deleting
