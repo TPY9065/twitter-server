@@ -156,6 +156,20 @@ router.post("/get/tweets", async (req, res) => {
   return res.status(200).json({ tweets: returnTweets });
 });
 
+router.post("/get/comments", async (req, res) => {
+  const { replyTweetId, page } = req.body;
+  const comments = await (
+    await commentModel.find({ replyTweetId: replyTweetId })
+  ).reverse();
+  const returnComments = comments.slice(page * 5, parseInt(page + 1) * 5);
+  if (returnComments.length === 0) {
+    return res
+      .status(304)
+      .json({ message: "There are no more comments of this tweet" });
+  }
+  return res.status(200).json({ comments: returnComments });
+});
+
 // tweets posting
 router.post("/post/tweet", upload.array("image", 4), async (req, res) => {
   const tweet = await uploadImage(req);
