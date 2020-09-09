@@ -189,8 +189,9 @@ router.put("/like/tweet", async (req, res) => {
 });
 
 // update tweets comments and save to comment database
-router.put("/comment/tweet", async (req, res) => {
+router.put("/comment/tweet", upload.array("image", 4), async (req, res) => {
   const id = req.body.replyTweetId;
+  console.log(id);
   tweetModel.findByIdAndUpdate(id, { $inc: { comment: 1 } }).exec();
   var commentTweet = await uploadImage(req);
   commentTweet.replyTweetId = id;
